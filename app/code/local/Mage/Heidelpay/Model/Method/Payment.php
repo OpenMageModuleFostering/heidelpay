@@ -10,7 +10,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_code = 'payment';
   protected $_order;
   protected $_moduleMode = 'DIRECT';
-  protected $version = 'Premium 13.12.17';
+  protected $version = '14.01.08';
 	
   /**
 	 * Availability options
@@ -493,7 +493,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
           $order->addStatusToHistory($payment->getPaymentState(), 'Short ID: '.$shortid, $order->getCustomerNoteNotify());
           if ($debug) echo 'PayMethod: '.$payMethod.'<br>';
           if ($debug) echo 'AuthType: '.$authType.'<br>';
-          if ($authType != '3DSecure'){
+          if (strpos($payMethod, 'PA') !== false && $authType != '3DSecure'){
             // TransID f�r PIXI speichern
             $order->getPayment()->setLastTransId($uniqueid);
             if ($debug) echo 'UniqueId: '.$uniqueid.'<br>';
@@ -695,7 +695,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	
 	if($lang != 'en'){
 		$front = 'forward_'.$lang.'.png';
-		$back = 'back_'.$lang.'png';
+		$back = 'back_'.$lang.'.png';
 		$frontrg = 'forward_'.$lang.'.jpg';
 		
 		if(@GetImageSize($imagePath.$front)){ $filename_f = $front; }

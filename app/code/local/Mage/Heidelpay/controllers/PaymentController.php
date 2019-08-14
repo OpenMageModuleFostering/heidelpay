@@ -615,10 +615,10 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
           	Mage::log("Heidelpay - responseAction: order->setState " .$payment->getPaymentState());
             $order->setState($payment->getPaymentState());
             $order->addStatusToHistory($payment->getPaymentState(), 'Short ID: '.$shortid.' '.$invoiceMailComment, $order->getCustomerNoteNotify());
-            //if (strpos($payCode, 'PA') !== false){ # Nur bei PA speichern.
+            if (strpos($payCode, 'PA') !== false){ # Nur bei PA speichern.
               // TransID f�r PIXI speichern
               $order->getPayment()->setLastTransId($uniqueid);
-            //}
+            }
            // $order->getPayment()->registerCaptureNotification($presAmount);
             $order->setCustomerNote($invoiceMailComment); // Kommentar auch in EMail
             $order->save();
