@@ -548,6 +548,33 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
         #$payment = $order->getPayment()->getMethodInstance();
         $order->addStatusToHistory($order->getStatus(), $prePaidData, $order->getCustomerNoteNotify());
         $order->save();
+      } elseif (in_array(strtoupper($payCode), array('DD'))) {
+      	   $hpPayinfos = array(
+          'ACCOUNT_BIC'       => $res['all']['ACCOUNT_BIC'],
+          'ACCOUNT_IBAN'      => $res['all']['ACCOUNT_IBAN'],
+          'ACCOUNT_IDENTIFICATION'    => $res['all']['ACCOUNT.IDENTIFICATION'],
+          'IDENTIFICATION_CREDITOR_ID'         => $res['all']['IDENTIFICATION_CREDITOR_ID']
+        );
+        $repl = array(
+          '{ACCOUNT_BIC}'  				=> $hpPayinfos['ACCOUNT_BIC'],
+          '{ACCOUNT_IBAN}'  			=> $hpPayinfos['ACCOUNT_IBAN'],
+          '{ACCOUNT_IDENTIFICATION}'   	=> $hpPayinfos['ACCOUNT_IDENTIFICATION'],
+          '{IDENTIFICATION_CREDITOR_ID}'=> $hpPayinfos['IDENTIFICATION_CREDITOR_ID']
+        );
+
+        $locale     = explode('_', Mage::app()->getLocale()->getLocaleCode());
+        if (is_array($locale) && ! empty($locale))
+          $language = $locale[0];
+        else
+          $language = $this->getDefaultLocale();
+
+        define('HP_SUCCESS_DIRECTDEBIT', $this->_getHelper('heidelpay')->__('HP_SUCCESS_DIRECTDEBIT'));
+        $prePaidData = nl2br(strtr(HP_SUCCESS_DIRECTDEBIT, $repl));
+        if ($debug) echo $prePaidData;
+
+        $order = $this->getOrder()->setCustomerNote($prePaidData);
+        $order->addStatusToHistory($order->getStatus(), $prePaidData, $order->getCustomerNoteNotify());
+        $order->save();
       }
 
       $src = Mage::getUrl('heidelpay/payment/success/', array('_secure' => true));
@@ -634,7 +661,6 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
       #$parameters['FRONTEND.ENABLED']       = "false";
     } else if ($this->actualPaymethod == 'PPAL'){
       $parameters['ACCOUNT.BRAND']          = 'PAYPAL';
-      $parameters['PAYMENT.CODE']           = ($mode != 'DB') ? "VA.".$mode : "VA.PA";
     #} else if ($this->actualPaymethod == 'XC'){
     #  $parameters['ACCOUNT.BRAND']          = 'VISA';
     } else if ($this->actualPaymethod == 'BS'){

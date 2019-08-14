@@ -121,6 +121,18 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
   {
     $this->_loadCheckoutObjects();
 
+    
+
+    $order = $this->getOrder();
+    $session = $this->getCheckout();
+    $order->loadByIncrementId($session->getLastRealOrderId());
+    $payment = $order->getPayment()->getMethodInstance();
+    // Load last status
+    if ($order->getStatus() == $payment->getPaymentState()) {
+    	$this->_redirect('heidelpay/payment/success', array('_forced_secure' => true, '_store_to_url' => true, '_nosid' => true));
+    	return;
+    }
+    
     // set quote to active
     if ($quoteId = $this->getCheckout()->getQuoteId()) {
       $quote = Mage::getModel('sales/quote')->load($quoteId);
@@ -129,11 +141,7 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
       }
     }
 
-    $order = $this->getOrder();
-    $session = $this->getCheckout();
-    $order->loadByIncrementId($session->getLastRealOrderId());
-
-    $payment = $order->getPayment()->getMethodInstance();
+    
 
     $ACT_MOD_MODE = $payment->getConfigData('modulemode');
     if (!$ACT_MOD_MODE) $ACT_MOD_MODE = 'AFTER';
@@ -507,7 +515,7 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
 
       if ($payCode == 'IV.PA' && $post['ACCOUNT_BRAND'] == 'BILLSAFE'){
 	      $repl = array(
-          '{AMOUNT}'        => $presAmount,
+          '{AMOUNT}'        => $post['CRITERION_BILLSAFE_AMOUNT'], 
           '{CURRENCY}'      => $post['CRITERION_BILLSAFE_CURRENCY'], 
           '{ACC_OWNER}'     => $post['CRITERION_BILLSAFE_RECIPIENT'], 
           '{ACC_BANKNAME}'  => $post['CRITERION_BILLSAFE_BANKNAME'], 
@@ -716,6 +724,15 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
 
   public function threeDSecureAction()/*{{{*/
   {
+  	$order = $this->getOrder();
+    $session = $this->getCheckout();
+    $order->loadByIncrementId($session->getLastRealOrderId());
+    $payment = $order->getPayment()->getMethodInstance();
+    // Load last status
+    if ($order->getStatus() == $payment->getPaymentState()) {
+    	$this->_redirect('heidelpay/payment/success', array('_forced_secure' => true, '_store_to_url' => true, '_nosid' => true));
+    	return;
+    }
     $this->loadLayout();
     $this->getLayout()->getBlock('heidelpay_secure')->setHP3DIframe($this->getSession()->getHeidelpayIframe());
     Mage::dispatchEvent('heidelpay_payment_controller_threeDSecure_action');

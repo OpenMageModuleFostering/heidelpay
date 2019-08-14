@@ -29,7 +29,7 @@
 "Credit Card X","Credit Card X"
 "Debit Card","Debit Card"
 "Direct Debit","Direct Debit"
-"SOFORT &Üuml;berweisung","SOFORT &Üuml;berweisung"
+"SOFORT &ï¿½uml;berweisung","SOFORT &ï¿½uml;berweisung"
 "Giropay","Giropay"
 "Pay Pal","Pay Pal"
 "EPS","EPS"
@@ -45,7 +45,7 @@
 "Heidelpay Debit Card","Heidelpay Debit Card"
 "Heidelpay Debitcard","Heidelpay Debitcard"
 "Heidelpay Direct Debit","Heidelpay Direct Debit"
-"Heidelpay SOFORT Überweisung","Heidelpay SOFORT Überweisung"
+"Heidelpay SOFORT ï¿½berweisung","Heidelpay SOFORT ï¿½berweisung"
 "Heidelpay Giropay","Heidelpay Giropay"
 "Heidelpay Pay Pal","Heidelpay Pay Pal"
 "Heidelpay EPS","Heidelpay EPS"
@@ -123,6 +123,16 @@
             When you transfer the money you HAVE TO use the identification number
         {SHORTID}
         as the descriptor and nothing else. Otherwise we cannot match your transaction!"
+        
+"HP_SUCCESS_DIRECTDEBIT","The amount will be debited from this account within the next days:
+
+IBAN:   {ACCOUNT_IBAN}
+BIC:    {ACCOUNT_BIC}
+
+The booking contains the mandate reference ID: {ACCOUNT_IDENTIFICATION}
+and the creditor identifier:                   {IDENTIFICATION_CREDITOR_ID}
+
+Please ensure that there will be sufficient funds on the corresponding account."
 "HP_LEGALNOTE_BILLSAFE","Please remit the outstanding amount {DAYS} days after you have been notified about shipping."
 
 "HP_BARPAY_INFO","Sicher, schnell und ohne Geb&uuml;hren: mit BarPay zahlen Sie Internet-Eink&auml;ufe mit Bargeld. Ohne Anmeldung. Ohne Kreditkarte. Ohne Kontodetails.<br><br>Nach Auswahl von BarPay &uuml;bermittelt Ihnen Ihr Online-H&auml;ndler einen individuellen Barcode per E-Mail oder zum Download auf Ihren Computer. Diesen k&ouml;nnen Sie ausdrucken und in &uuml;ber 18.000 BarPay-Akzeptanzstellen bezahlen. Der Zahlungseingang wird dem Online-H&auml;ndler in Echtzeit &uuml;bermittelt, und die bestellte Ware geht umgehend in den Versand. <br><br>"

@@ -3,7 +3,7 @@
     "type": "magento-module",
     "license": "proprietary",
     "homepage": "",
-    "description": "This is the Magento Heidelpay Payment Extension. Direct support from Heidelpay.",
+    "description": "Heidelpay Payment Plugin",
     "authors": [
     {
         "name": "Heidelberger Payment GmbH",
