@@ -607,27 +607,24 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
         } else {
           if (!empty($orderId)){
             // fill order
-            if ($order->canInvoice()) {
-                $convertor  = Mage::getModel('sales/convert_order');
-                $invoice    = $convertor->toInvoice($order);
-                foreach ($order->getAllItems() as $orderItem) {
-                    if (!$orderItem->getQtyToInvoice()) {
-                        continue;
-                    }
-                    $item = $convertor->itemToInvoiceItem($orderItem);
-                    $item->setQty($orderItem->getQtyToInvoice());
-                    $invoice->addItem($item);
-                }
-                
-                $invoice->collectTotals();
-                $invoice->register()->capture(); 
-                Mage::getModel('core/resource_transaction')
-                    ->addObject($invoice)
-                    ->addObject($invoice->getOrder())
-                    ->save();
-                if ($this->_invoiceOrderEmail) $invoice->sendEmail(true, $invoiceMailComment); // Rechnung versenden
-            }
-          	
+			if ($order->canInvoice()) {
+				try {
+					$invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice();
+					if (!$invoice->getTotalQty()) {
+						Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
+					}
+					$invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+					$invoice->register();
+					$transactionSave = Mage::getModel('core/resource_transaction')
+						->addObject($invoice)
+						->addObject($invoice->getOrder())
+						->save();
+					if ($this->_invoiceOrderEmail) $invoice->sendEmail(true, $invoiceMailComment); // Rechnung versenden
+				}
+				catch (Mage_Core_Exception $e) {
+				}
+			}
+			
           	Mage::log("Heidelpay - responseAction: order->setState " .$payment->getPaymentState());
             $order->setState($payment->getPaymentState());
             $order->addStatusToHistory($payment->getPaymentState(), 'Short ID: '.$shortid.' '.$invoiceMailComment, $order->getCustomerNoteNotify());
