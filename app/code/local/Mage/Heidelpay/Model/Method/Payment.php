@@ -8,9 +8,9 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	 * @var string [a-z0-9_]   
 	 */
 	protected $_code = 'payment';
-  protected $_order;
-  protected $_moduleMode = 'DIRECT';
-  protected $version = '14.01.08';
+	protected $_order;
+	protected $_moduleMode = 'DIRECT';
+	protected $version = '14.05.22';
 	
   /**
 	 * Availability options
@@ -24,10 +24,10 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_canVoid                 = false;
 	protected $_canUseInternal          = false;
 	protected $_canUseCheckout          = true;
-  protected $_canUseForMultishipping  = false;
-  protected $_canSaveCc               = false;
+	protected $_canUseForMultishipping  = false;
+	protected $_canSaveCc               = false;
    */
-  protected $_isGateway = false;
+	protected $_isGateway = false;
     protected $_canAuthorize = false;
     protected $_canCapture = true;
     protected $_canCapturePartial = true;
@@ -51,9 +51,9 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	 */
 	protected $_payment_url;
 	protected $_request = array();
-  protected $_availablePayments = array('XC', 'CC','DD','DC','VA','OT','IV','PP','UA','PC');
-  protected $_allowCurrencyCode = array('AED','AFA','ALL','AMD','ANG','AOA','ARS','AUD','AWG','AZM','BAM','BBD','BDT','BGN','BHD','BIF','BMD','BND','BOB','BRL','BSD','BTN','BWP','BYR','BZD','CAD','CDF','CHF','CLP','CNY','COP','CRC','CUP','CVE','CYP','CZK','DJF','DKK','DOP','DZD','EEK','EGP','ERN','ETB','EUR','FJD','FKP','GBP','GEL','GGP','GHC','GIP','GMD','GNF','GTQ','GYD','HKD','HNL','HRK','HTG','HUF','IDR','ILS','IMP','INR','IQD','IRR','ISK','JEP','JMD','JOD','JPY','KES','KGS','KHR','KMF','KPW','KRW','KWD','KYD','KZT','LAK','LBP','LKR','LRD','LSL','LTL','LVL','LYD','MAD','MDL','MGA','MKD','MMK','MNT','MOP','MRO','MTL','MUR','MVR','MWK','MXN','MYR','MZM','NAD','NGN','NIO','NOK','NPR','NZD','OMR','PAB','PEN','PGK','PHP','PKR','PLN','PTS','PYG','QAR','RON','RUB','RWF','SAR','SBD','SCR','SDD','SEK','SGD','SHP','SIT','SKK','SLL','SOS','SPL','SRD','STD','SVC','SYP','SZL','THB','TJS','TMM','TND','TOP','TRL','TRY','TTD','TVD','TWD','TZS','UAH','UGX','USD','UYU','UZS','VEF','VND','VUV','WST','XAF','XAG','XAU','XCD','XDR','XOF','XPD','XPF','XPT','YER','ZAR','ZMK','ZWD');
-  protected $actualPaymethod;
+	protected $_availablePayments = array('XC', 'CC','DD','DC','VA','OT','IV','PP','UA','PC');
+	protected $_allowCurrencyCode = array('AED','AFA','ALL','AMD','ANG','AOA','ARS','AUD','AWG','AZM','BAM','BBD','BDT','BGN','BHD','BIF','BMD','BND','BOB','BRL','BSD','BTN','BWP','BYR','BZD','CAD','CDF','CHF','CLP','CNY','COP','CRC','CUP','CVE','CYP','CZK','DJF','DKK','DOP','DZD','EEK','EGP','ERN','ETB','EUR','FJD','FKP','GBP','GEL','GGP','GHC','GIP','GMD','GNF','GTQ','GYD','HKD','HNL','HRK','HTG','HUF','IDR','ILS','IMP','INR','IQD','IRR','ISK','JEP','JMD','JOD','JPY','KES','KGS','KHR','KMF','KPW','KRW','KWD','KYD','KZT','LAK','LBP','LKR','LRD','LSL','LTL','LVL','LYD','MAD','MDL','MGA','MKD','MMK','MNT','MOP','MRO','MTL','MUR','MVR','MWK','MXN','MYR','MZM','NAD','NGN','NIO','NOK','NPR','NZD','OMR','PAB','PEN','PGK','PHP','PKR','PLN','PTS','PYG','QAR','RON','RUB','RWF','SAR','SBD','SCR','SDD','SEK','SGD','SHP','SIT','SKK','SLL','SOS','SPL','SRD','STD','SVC','SYP','SZL','THB','TJS','TMM','TND','TOP','TRL','TRY','TTD','TVD','TWD','TZS','UAH','UGX','USD','UYU','UZS','VEF','VND','VUV','WST','XAF','XAG','XAU','XCD','XDR','XOF','XPD','XPF','XPT','YER','ZAR','ZMK','ZWD');
+	protected $actualPaymethod;
   /*}}}*/
 			
   /**
@@ -233,6 +233,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
     if (empty($email)) $email = $billing->getEmail();
 
     $userData = array(
+      'userid'		=> $userId,
 	  'company' => $billing->getCompany(),
       'firstname' => $billing->getFirstname(),
       'lastname'  => $billing->getLastname(),
@@ -540,7 +541,6 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
         // BarPay
         if (!empty($res['all']['CRITERION_BARPAY_PAYCODE_URL'])){
         	$prePaidData = preg_replace('/{LINK}/', $res['all']['CRITERION_BARPAY_PAYCODE_URL'], $this->_getHelper('heidelpay')->__('HP_BARPAY_DOWNLOAD'));
-        	#error_log($this->_getHelper('heidelpay')->__('HP_BARPAY_DOWNLOAD'), 3, 'd:\LOGS\magento.log');
         }
 
         #$this->getSession()->setHpPayinfos($hpPayinfos);
@@ -634,6 +634,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
       #$parameters['FRONTEND.ENABLED']       = "false";
     } else if ($this->actualPaymethod == 'PPAL'){
       $parameters['ACCOUNT.BRAND']          = 'PAYPAL';
+      $parameters['PAYMENT.CODE']           = ($mode != 'DB') ? "VA.".$mode : "VA.PA";
     #} else if ($this->actualPaymethod == 'XC'){
     #  $parameters['ACCOUNT.BRAND']          = 'VISA';
     } else if ($this->actualPaymethod == 'BS'){
@@ -731,17 +732,19 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
   
   public function getBillsafeBasket($order)/*{{{*/
   {
-			$items = $order->getAllItems();
+			$items = $order->getAllVisibleItems();
+		
       if ($items) {
       	$i = 0;
 	      foreach($items as $item) {
 	      	$i++;
 	      	$prefix = 'CRITERION.POS_'.sprintf('%02d', $i);
+			$quantity = (int)$item->getQtyOrdered();
 	      	$parameters[$prefix.'.POSITION'] 				= $i;
-					$parameters[$prefix.'.QUANTITY'] 				= (int)$item->getQtyOrdered();
+					$parameters[$prefix.'.QUANTITY'] 				= $quantity; 
 					$parameters[$prefix.'.UNIT'] 						= 'Stk.'; // Liter oder so
-					$parameters[$prefix.'.AMOUNT_UNIT'] 		= round($item->getPrice()*100);
-					$parameters[$prefix.'.AMOUNT'] 					= round($item->getRowTotal()*100);
+					$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 		= floor($item->getPriceInclTax()*100);
+					$parameters[$prefix.'.AMOUNT_GROSS'] 					= floor(($item->getPriceInclTax() * $quantity ) *100);
 					$parameters[$prefix.'.TEXT'] 						= $item->getName();
 					$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
 					//$parameters[$prefix.'.COL2'] 						= '';
@@ -758,15 +761,15 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	      	$parameters[$prefix.'.POSITION'] 				= $i;
 					$parameters[$prefix.'.QUANTITY'] 				= '1';
 					$parameters[$prefix.'.UNIT'] 						= 'Stk.'; // Liter oder so
-					$parameters[$prefix.'.AMOUNT_UNIT'] 		= round($this->getShippingNetPrice($order)*100);
-					$parameters[$prefix.'.AMOUNT'] 					= round($this->getShippingNetPrice($order)*100);
+					$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 			= floor((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)) * 100);
+					$parameters[$prefix.'.AMOUNT_GROSS'] 				= floor((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)) * 100);
 					$parameters[$prefix.'.TEXT'] 						= 'Shipping';
 					//$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
 					//$parameters[$prefix.'.COL2'] 						= '';
 					//$parameters[$prefix.'.COL3'] 						= '';
 					//$parameters[$prefix.'.COL4'] 						= '';
 					$parameters[$prefix.'.ARTICLE_NUMBER'] 	= '0';
-					$parameters[$prefix.'.PERCENT_VAT'] 		= $this->getShippingTaxPercent($order);
+					$parameters[$prefix.'.PERCENT_VAT'] 		=  $this->getShippingTaxPercent($order);
 					$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'shipment'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
 	    }
 	    if ($order->getDiscountAmount() > 0){
@@ -775,8 +778,8 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	      	$parameters[$prefix.'.POSITION'] 				= $i;
 					$parameters[$prefix.'.QUANTITY'] 				= '1';
 					$parameters[$prefix.'.UNIT'] 						= 'Stk.'; // Liter oder so
-					$parameters[$prefix.'.AMOUNT_UNIT'] 		= round($order->getDiscountAmount()*100);
-					$parameters[$prefix.'.AMOUNT'] 					= round($order->getDiscountAmount()*100);
+					$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 				= floor($order->getDiscountAmount()*100);
+					$parameters[$prefix.'.AMOUNT_GROSS'] 						= floor($order->getDiscountAmount()*100);
 					$parameters[$prefix.'.TEXT'] 						= 'Voucher';
 					//$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
 					//$parameters[$prefix.'.COL2'] 						= '';
@@ -787,31 +790,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 					$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'voucher'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
 	    }
 
-			/*			
-			2. Order Item
-    	Attributes:
-        parent_id
-        quote_item_id
-        product_id
-        sku
-        image
-        name
-        description
-        qty_ordered
-        qty_backordered
-        qty_canceled
-        qty_shipped
-        qty_returned
-        price
-        cost
-        discount_percent
-        discount_amount
-        tax_percent
-        tax_amount
-        row_total
-        row_weight
-        applied_rule_ids
-			*/
+		
     return $parameters;
   }/*}}}*/
   

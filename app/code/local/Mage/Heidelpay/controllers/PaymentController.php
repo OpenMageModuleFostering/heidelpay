@@ -507,7 +507,7 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
 
       if ($payCode == 'IV.PA' && $post['ACCOUNT_BRAND'] == 'BILLSAFE'){
 	      $repl = array(
-          '{AMOUNT}'        => $post['CRITERION_BILLSAFE_AMOUNT'], 
+          '{AMOUNT}'        => $presAmount,
           '{CURRENCY}'      => $post['CRITERION_BILLSAFE_CURRENCY'], 
           '{ACC_OWNER}'     => $post['CRITERION_BILLSAFE_RECIPIENT'], 
           '{ACC_BANKNAME}'  => $post['CRITERION_BILLSAFE_BANKNAME'], 
