@@ -2,7 +2,7 @@
 <config>
   <modules>
     <Mage_Heidelpay>
-            <version>14.10.14</version>
+            <version>15.11.10</version>
     </Mage_Heidelpay>
   </modules>
   <!--{{{Global-->
@@ -145,17 +145,17 @@
   </frontend>
   <!--}}}-->
   <!--{{{Admin-->
-  <admin>
-    <routers>
-	    <heidelpay>
-        <use>admin</use>
-        <args>
-	        <module>Mage_Heidelpay</module>
-	        <frontName>Heidelpay</frontName>
-        </args>
-	    </heidelpay>
-    </routers>
-	</admin>
+<admin>
+	<routers>
+		<adminhtml>
+			<args>
+				<modules>
+					<Mage_Heidelpay after="Mage_Adminhtml">Heidelpay</Mage_Heidelpay>
+				</modules>
+			</args>
+		</adminhtml>
+	</routers>
+</admin>
     
   <adminhtml>  
     <translate>
