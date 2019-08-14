@@ -10,7 +10,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_code = 'payment';
 	protected $_order;
 	protected $_moduleMode = 'DIRECT';
-	protected $version = '14.08.19';
+	protected $version = '14.08.27';
 	
   /**
 	 * Availability options
@@ -766,54 +766,60 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	      	$i++;
 	      	$prefix = 'CRITERION.POS_'.sprintf('%02d', $i);
 			$quantity = (int)$item->getQtyOrdered();
-	      	$parameters[$prefix.'.POSITION'] 				= $i;
-					$parameters[$prefix.'.QUANTITY'] 				= $quantity; 
-					$parameters[$prefix.'.UNIT'] 						= 'Stk.'; // Liter oder so
-					$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 		= floor($item->getPriceInclTax()*100);
-					$parameters[$prefix.'.AMOUNT_GROSS'] 					= floor(($item->getPriceInclTax() * $quantity ) *100);
-					$parameters[$prefix.'.TEXT'] 						= $item->getName();
-					$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
-					//$parameters[$prefix.'.COL2'] 						= '';
-					//$parameters[$prefix.'.COL3'] 						= '';
-					//$parameters[$prefix.'.COL4'] 						= '';
-					$parameters[$prefix.'.ARTICLE_NUMBER'] 	= $item->getProductId();
-					$parameters[$prefix.'.PERCENT_VAT'] 		= sprintf('%1.2f', $item->getTaxPercent());
-					$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'goods'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
+	      	$parameters[$prefix.'.POSITION'] 					= $i;
+			$parameters[$prefix.'.QUANTITY'] 				= $quantity; 
+			$parameters[$prefix.'.UNIT'] 							= 'Stk.'; // Liter oder so
+			$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 		= floor(bcmul($item->getPriceInclTax(), 100, 10));
+			$parameters[$prefix.'.AMOUNT_GROSS'] 				= floor(bcmul($item->getPriceInclTax() * $quantity, 100, 10));
+			
+			
+			$parameters[$prefix.'.TEXT'] 							= $item->getName();
+			$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
+			//$parameters[$prefix.'.COL2'] 						= '';
+			//$parameters[$prefix.'.COL3'] 						= '';
+			//$parameters[$prefix.'.COL4'] 						= '';
+			$parameters[$prefix.'.ARTICLE_NUMBER'] 	= $item->getProductId();
+			$parameters[$prefix.'.PERCENT_VAT'] 		= sprintf('%1.2f', $item->getTaxPercent());
+			$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'goods'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
 	      }
 	    }
+		
 	    if ($this->getShippingNetPrice($order) > 0){
 	    $i++;
 	      	$prefix = 'CRITERION.POS_'.sprintf('%02d', $i);
-	      	$parameters[$prefix.'.POSITION'] 				= $i;
-					$parameters[$prefix.'.QUANTITY'] 				= '1';
-					$parameters[$prefix.'.UNIT'] 						= 'Stk.'; // Liter oder so
-					$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 			= floor((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)) * 100);
-					$parameters[$prefix.'.AMOUNT_GROSS'] 				= floor((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)) * 100);
-					$parameters[$prefix.'.TEXT'] 						= 'Shipping';
-					//$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
-					//$parameters[$prefix.'.COL2'] 						= '';
-					//$parameters[$prefix.'.COL3'] 						= '';
-					//$parameters[$prefix.'.COL4'] 						= '';
-					$parameters[$prefix.'.ARTICLE_NUMBER'] 	= '0';
-					$parameters[$prefix.'.PERCENT_VAT'] 		=  $this->getShippingTaxPercent($order);
-					$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'shipment'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
+	      	$parameters[$prefix.'.POSITION'] 					= $i;
+			$parameters[$prefix.'.QUANTITY'] 				= '1';
+			$parameters[$prefix.'.UNIT'] 							= 'Stk.'; // Liter oder so
+			$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 		= floor(bcmul((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)), 100, 10));
+			$parameters[$prefix.'.AMOUNT_GROSS'] 				= floor(bcmul((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)), 100, 10));
+
+			 
+			$parameters[$prefix.'.TEXT'] 							= 'Shipping';
+			//$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
+			//$parameters[$prefix.'.COL2'] 						= '';
+			//$parameters[$prefix.'.COL3'] 						= '';
+			//$parameters[$prefix.'.COL4'] 						= '';
+			$parameters[$prefix.'.ARTICLE_NUMBER'] 	= '0';
+			$parameters[$prefix.'.PERCENT_VAT'] 		=  $this->getShippingTaxPercent($order);
+			$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'shipment'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
 	    }
 	    if ($order->getDiscountAmount() > 0){
 	    $i++;
 	      	$prefix = 'CRITERION.POS_'.sprintf('%02d', $i);
-	      	$parameters[$prefix.'.POSITION'] 				= $i;
-					$parameters[$prefix.'.QUANTITY'] 				= '1';
-					$parameters[$prefix.'.UNIT'] 						= 'Stk.'; // Liter oder so
-					$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 				= floor($order->getDiscountAmount()*100);
-					$parameters[$prefix.'.AMOUNT_GROSS'] 						= floor($order->getDiscountAmount()*100);
-					$parameters[$prefix.'.TEXT'] 						= 'Voucher';
-					//$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
-					//$parameters[$prefix.'.COL2'] 						= '';
-					//$parameters[$prefix.'.COL3'] 						= '';
-					//$parameters[$prefix.'.COL4'] 						= '';
-					$parameters[$prefix.'.ARTICLE_NUMBER'] 	= '0';
-					$parameters[$prefix.'.PERCENT_VAT'] 		= '0.00';
-					$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'voucher'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
+	      	$parameters[$prefix.'.POSITION'] 					= $i;
+			$parameters[$prefix.'.QUANTITY'] 				= '1';
+			$parameters[$prefix.'.UNIT'] 							= 'Stk.'; // Liter oder so
+			$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 				= floor(bcmul($order->getDiscountAmount(), 100, 10));
+			$parameters[$prefix.'.AMOUNT_GROSS'] 						= floor(bcmul($order->getDiscountAmount(), 100, 10));
+			
+			$parameters[$prefix.'.TEXT'] 							= 'Voucher';
+			//$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
+			//$parameters[$prefix.'.COL2'] 						= '';
+			//$parameters[$prefix.'.COL3'] 						= '';
+			//$parameters[$prefix.'.COL4'] 						= '';
+			$parameters[$prefix.'.ARTICLE_NUMBER'] 	= '0';
+			$parameters[$prefix.'.PERCENT_VAT'] 		= '0.00';
+			$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'voucher'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
 	    }
 
 		
