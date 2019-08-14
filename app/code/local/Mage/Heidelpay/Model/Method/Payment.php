@@ -10,7 +10,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_code = 'payment';
 	protected $_order;
 	protected $_moduleMode = 'DIRECT';
-	protected $version = '14.08.27';
+	protected $version = '14.09.01';
 	
   /**
 	 * Availability options
@@ -615,72 +615,73 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
       $parameters['FRONTEND.ENABLED']     = "true";
     }
     $parameters['FRONTEND.REDIRECT_TIME'] = "0";
-    $parameters['FRONTEND.POPUP']         = "false";
-    $parameters['FRONTEND.MODE']          = "DEFAULT";
-    $parameters['FRONTEND.LANGUAGE']      = $lang;
+    $parameters['FRONTEND.POPUP']			= "false";
+    $parameters['FRONTEND.MODE']			= "DEFAULT";
+    $parameters['FRONTEND.LANGUAGE']	= $lang;
     $parameters['FRONTEND.LANGUAGE_SELECTOR'] = "true";
-    $parameters['FRONTEND.ONEPAGE']       = "true";
+    $parameters['FRONTEND.ONEPAGE']	= "true";
     if ($mode == 'RG'){
-      $parameters['FRONTEND.NEXTTARGET']    = "location.href";
+      $parameters['FRONTEND.NEXTTARGET']	= "location.href";
     } else {
-      $parameters['FRONTEND.NEXTTARGET']    = "top.location.href";
+      $parameters['FRONTEND.NEXTTARGET']	= "top.location.href";
     }
     $parameters['FRONTEND.CSS_PATH']      = $this->pageURL."heidelpay_style.css";
     $parameters['FRONTEND.RETURN_ACCOUNT']= "true";
 
     if ($this->actualPaymethod == 'TP'){
       $parameters['CRITERION.THOMEPAY_EMB'] = "1";
-      $parameters['FRONTEND.HEIGHT']        = "700";
-      #$parameters['ACCOUNT.NUMBER']         = $this->getCheckout()->getHeidelpayTPAccountNumber();
-      #$parameters['ACCOUNT.BANK']           = $this->getCheckout()->getHeidelpayTPBankCode();
-      #$parameters['FRONTEND.ENABLED']       = "false";
+      $parameters['FRONTEND.HEIGHT']		= "700";
+      #$parameters['ACCOUNT.NUMBER']		= $this->getCheckout()->getHeidelpayTPAccountNumber();
+      #$parameters['ACCOUNT.BANK']			= $this->getCheckout()->getHeidelpayTPBankCode();
+      #$parameters['FRONTEND.ENABLED']	= "false";
     } else if ($this->actualPaymethod == 'SU'){
-      $parameters['FRONTEND.HEIGHT']        = "700";
-      $parameters['ACCOUNT.NUMBER']         = $this->getCheckout()->getHeidelpaySUAccountNumber();
-      $parameters['ACCOUNT.BANK']           = $this->getCheckout()->getHeidelpaySUBankCode();
-      $parameters['ACCOUNT.HOLDER']         = $this->getCheckout()->getHeidelpaySUHolder();
-      #$parameters['FRONTEND.ENABLED']       = "false";
+      $parameters['FRONTEND.HEIGHT']		= "700";
+      $parameters['ACCOUNT.NUMBER']		= $this->getCheckout()->getHeidelpaySUAccountNumber();
+      $parameters['ACCOUNT.BANK']				= $this->getCheckout()->getHeidelpaySUBankCode();
+      $parameters['ACCOUNT.HOLDER']		= $this->getCheckout()->getHeidelpaySUHolder();
+      #$parameters['FRONTEND.ENABLED']	= "false";
     } else if ($this->actualPaymethod == 'IDL' or $this->actualPaymethod == 'EPS'){
-      #$parameters['ACCOUNT.NUMBER']         = $this->getCheckout()->getHeidelpayIDLAccountNumber();
-      #$parameters['ACCOUNT.BANK']           = $this->getCheckout()->getHeidelpayIDLBankCode();
-      #$parameters['ACCOUNT.HOLDER']         = $this->getCheckout()->getHeidelpayIDLHolder();
-      #$parameters['ACCOUNT.COUNTRY']        = $_SESSION['hpIdealData']['onlineTransferCountry'];
-      #$parameters['ACCOUNT.BANKNAME']       = $_SESSION['hpIdealData']['onlineTransferInstitute'];
-      $parameters['FRONTEND.ENABLED']       = "true";	  
+      #$parameters['ACCOUNT.NUMBER']		= $this->getCheckout()->getHeidelpayIDLAccountNumber();
+      #$parameters['ACCOUNT.BANK']			= $this->getCheckout()->getHeidelpayIDLBankCode();
+      #$parameters['ACCOUNT.HOLDER']		= $this->getCheckout()->getHeidelpayIDLHolder();
+      #$parameters['ACCOUNT.COUNTRY']	= $_SESSION['hpIdealData']['onlineTransferCountry'];
+      #$parameters['ACCOUNT.BANKNAME']	= $_SESSION['hpIdealData']['onlineTransferInstitute'];
+      $parameters['FRONTEND.ENABLED']	= "true";	  
 	} else if ($this->actualPaymethod == 'DD'){
 	  if($this->getCheckout()->getHeidelpayDDAccountNumber() != ''){ $parameters['ACCOUNT.NUMBER'] = $this->getCheckout()->getHeidelpayDDAccountNumber(); }
 	  if($this->getCheckout()->getHeidelpayDDBankCode() != ''){ $parameters['ACCOUNT.BANK'] = $this->getCheckout()->getHeidelpayDDBankCode(); }  
 	  $parameters['ACCOUNT.IBAN']				= $this->getCheckout()->getHeidelpayDDIban();
-	  $parameters['ACCOUNT.BIC']				= $this->getCheckout()->getHeidelpayDDBic();	  
+	  $parameters['ACCOUNT.BIC']					= $this->getCheckout()->getHeidelpayDDBic();	  
 	  $parameters['ACCOUNT.HOLDER']		= $this->getCheckout()->getHeidelpayDDHolder();
 	  $parameters['FRONTEND.ENABLED']	= "false";
     } else if ($this->actualPaymethod == 'GP'){
-      $parameters['ACCOUNT.NUMBER']         = $this->getCheckout()->getHeidelpayGPAccountNumber();
-      $parameters['ACCOUNT.BANK']           = $this->getCheckout()->getHeidelpayGPBankCode();
-      $parameters['ACCOUNT.HOLDER']         = $this->getCheckout()->getHeidelpayGPHolder();
-      #$parameters['FRONTEND.ENABLED']       = "false";
+	  /*	just work with iban/bic	*/
+      $parameters['ACCOUNT.IBAN']				= $this->getCheckout()->getHeidelpayGPAccountNumber();
+      $parameters['ACCOUNT.BIC']					= $this->getCheckout()->getHeidelpayGPBankCode();
+      $parameters['ACCOUNT.HOLDER']		= $this->getCheckout()->getHeidelpayGPHolder();
+      #$parameters['FRONTEND.ENABLED']	= "false";
     } else if ($this->actualPaymethod == 'PPAL'){
-      $parameters['ACCOUNT.BRAND']          = 'PAYPAL';
+      $parameters['ACCOUNT.BRAND']			= 'PAYPAL';
     #} else if ($this->actualPaymethod == 'XC'){
-    #  $parameters['ACCOUNT.BRAND']          = 'VISA';
+    #  $parameters['ACCOUNT.BRAND']		= 'VISA';
     } else if ($this->actualPaymethod == 'BS'){
-      $parameters['PAYMENT.CODE']           = "IV.PA";
-			$parameters['ACCOUNT.BRAND']          = "BILLSAFE";
-			$parameters['FRONTEND.ENABLED']     	= "false";
+      $parameters['PAYMENT.CODE']				= "IV.PA";
+			$parameters['ACCOUNT.BRAND']	= "BILLSAFE";
+			$parameters['FRONTEND.ENABLED']	= "false";
 
 			$order = $this->getOrder();
 			$bsParams = $this->getBillsafeBasket($order);
 			$parameters = array_merge($parameters, $bsParams);			
 			
     } else if ($this->actualPaymethod == 'BP'){
-      $parameters['PAYMENT.CODE']           = "PP.PA";
-			$parameters['ACCOUNT.BRAND']          = "BARPAY";
-			$parameters['FRONTEND.ENABLED']       = "false";
+      $parameters['PAYMENT.CODE']					= "PP.PA";
+			$parameters['ACCOUNT.BRAND']		= "BARPAY";
+			$parameters['FRONTEND.ENABLED']	= "false";
 			// Return URL CRITERION.BARPAY_PAYCODE_URL
     } else if ($this->actualPaymethod == 'MK'){
-      $parameters['PAYMENT.CODE']           = "PC.PA";
-			$parameters['ACCOUNT.BRAND']          = "MANGIRKART";
-			$parameters['FRONTEND.ENABLED']       = "false";
+      $parameters['PAYMENT.CODE']					= "PC.PA";
+			$parameters['ACCOUNT.BRAND']		= "MANGIRKART";
+			$parameters['FRONTEND.ENABLED']	= "false";
     }
 
     foreach($this->_availablePayments as $key=>$value) {

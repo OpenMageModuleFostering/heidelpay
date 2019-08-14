@@ -385,14 +385,22 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
           $this->_getHelper()->__('Customer was redirected to Payment IFrame.')
         )->save();
       }
-
+		
       if ($session->getQuoteId() && $session->getLastSuccessQuoteId()) {
         $session->setHeidelpayQuoteId($session->getQuoteId());
         $session->setHeidelpayLastSuccessQuoteId($session->getLastSuccessQuoteId());
         $session->setHeidelpayLastRealOrderId($session->getLastRealOrderId());
         $session->getQuote()->setIsActive(true)->save();
         $session->clear();
-      }
+      }elseif ($session->getLastSuccessQuoteId()){
+		$session->setHeidelpayQuoteId($session->getLastSuccessQuoteId());
+        $session->setHeidelpayLastSuccessQuoteId($session->getLastSuccessQuoteId());
+        $session->setHeidelpayLastRealOrderId($session->getLastRealOrderId());
+        $session->getQuote()->setIsActive(true)->save();
+        $session->clear();
+	  }
+
+#		mail('andreas.nemet@heidelpay.de', 'QuoteId', print_r($session->getQuoteId(),1).' # '.print_r($session->getLastSuccessQuoteId(),1).' # '.print_r($session->setHeidelpayQuoteId(),1));
 
       Mage::dispatchEvent('hp_payment_controller_redirect_action');
 

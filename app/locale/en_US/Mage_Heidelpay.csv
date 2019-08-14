@@ -84,6 +84,8 @@
 "Owner","Owner"
 "Please enter account no.","Please enter account no."
 "Please enter bankcode.","Please enter bankcode."
+"Please enter IBAN.","Please enter IBAN."
+"Please enter BIC.","Please enter BIC."
 "Please enter owner.","Please enter owner."
 "Enter additional information for the payment.","Enter additional information for the payment."
 "HP_SUCCESS_PREPAID","Your transaction was successfull! 

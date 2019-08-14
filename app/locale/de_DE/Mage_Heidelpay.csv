@@ -84,6 +84,8 @@
 "Owner","Inhaber"
 "Please enter account no.","Bitte Konto angeben."
 "Please enter bankcode.","Bitte BLZ angeben."
+"Please enter IBAN.","Bitte IBAN angeben."
+"Please enter BIC.","Bitte BIC angeben."
 "Please enter owner.","Bitte Inhaber angeben."
 "Enter additional information for the payment.","Geben Sie weitere Zahlungsinformationen ein."
 "HP_SUCCESS_PREPAID","Ihre Transaktion war erfolgreich!
