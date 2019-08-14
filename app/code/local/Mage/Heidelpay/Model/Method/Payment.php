@@ -10,7 +10,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_code = 'payment';
 	protected $_order;
 	protected $_moduleMode = 'DIRECT';
-	protected $version = '14.09.05';
+	protected $version = '14.09.12';
 	
   /**
 	 * Availability options
@@ -289,7 +289,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 
     // prepare data
     $billing	= $this->getOrder()->getBillingAddress();
-
+	$shipping	= $this->getOrder()->getShippingAddress();
     // Immer in der Basisw�hrung des Shops abrechnen
     //$amount		= number_format($this->getOrder()->getBaseGrandTotal(), 2, '.', '');
     //$currency	= $this->getOrder()->getBaseCurrencyCode();
@@ -298,8 +298,12 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
     $currency	= $this->getOrder()->getOrderCurrencyCode();
 
     #echo '<pre>'.print_r($this->getOrder(), 1).'</pre>';
-
-    $street		= $billing->getStreet();
+	if ($this->actualPaymethod == 'PPAL') { 
+		$street		= $shipping->getStreet();
+		
+	} else {
+		$street		= $billing->getStreet();
+	}
     $locale     = explode('_', Mage::app()->getLocale()->getLocaleCode());
     $valid      = array('XC', 'CC', 'DD', 'DC', 'OT', 'GP', 'SU', 'IV', 'IDL', 'EPS', 'PPAL', 'PP', 'MK', 'BS', 'BP'); // valid payment methods
     if ( ! in_array($this->actualPaymethod, $valid)) throw new Exception('Invalid Payment Mode given. '.$this->actualPaymethod);
@@ -316,20 +320,37 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
     $orderId  = $this->getOrder()->getPayment()->getMethodInstance()->getTransactionId();
     $insertId = $orderId;
     $orderId .= '-'.$userId;
-
-    $userData = array(
-	  'userid' => $userId,
-	  'company' => $billing->getCompany(),
-      'firstname' => $billing->getFirstname(),
-      'lastname'  => $billing->getLastname(),
-      'salutation'=> 'MR',#($order->customer['gender']=='f' ? 'MRS' : 'MR'),
-      'street'    => $street[0],
-      'zip'       => $billing->getPostcode(),
-      'city'      => $billing->getCity(),
-      'country'   => $billing->getCountry(),
-      'email'     => $this->getOrder()->getCustomerEmail(),
-      'ip'        => $this->getOrder()->getRemoteIp(),
-    );
+	
+ 
+	if ($this->actualPaymethod == 'PPAL') { 
+		$userData = array(
+		  'userid' => $userId,
+		  'company' => $shipping->getCompany(),
+		  'firstname' => $shipping->getFirstname(),
+		  'lastname'  => $shipping->getLastname(),
+		  'salutation'=> 'MR',#($order->customer['gender']=='f' ? 'MRS' : 'MR'),
+		  'street'    => $street[0],
+		  'zip'       => $shipping->getPostcode(),
+		  'city'      => $shipping->getCity(),
+		  'country'   => $shipping->getCountry(),
+		  'email'     => $this->getOrder()->getCustomerEmail(),
+		  'ip'        => $this->getOrder()->getRemoteIp(),
+		);
+	} else {
+		$userData = array(
+		  'userid' => $userId,
+		  'company' => $billing->getCompany(),
+		  'firstname' => $billing->getFirstname(),
+		  'lastname'  => $billing->getLastname(),
+		  'salutation'=> 'MR',#($order->customer['gender']=='f' ? 'MRS' : 'MR'),
+		  'street'    => $street[0],
+		  'zip'       => $billing->getPostcode(),
+		  'city'      => $billing->getCity(),
+		  'country'   => $billing->getCountry(),
+		  'email'     => $this->getOrder()->getCustomerEmail(),
+		  'ip'        => $this->getOrder()->getRemoteIp(),
+		);
+	}
 		if (empty($userData['ip'])) $userData['ip'] = $_SERVER['REMOTE_ADDR']; // Falls IP Leer, dann aus dem Server holen
 
     if ($debug) echo 'UniqueId: '.$this->getSession()->getHpUniqueId();
