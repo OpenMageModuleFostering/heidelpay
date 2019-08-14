@@ -9,10 +9,9 @@ html,body {
   margin-right: auto;
 }
 
-
 #send
 {
-	margin-left: 225px;
+	margin-left: 250px;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0px;
@@ -34,22 +33,7 @@ cursor: pointer;
 #cancel
 {
 	
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0px;
-  font-family: Arial;
-  color: #ffffff;
-  font-size: 15px;
-  background: #f28500;
-  padding: 2px 10px 2px 10px;
-  border: solid #e15000 2px;
-  text-decoration: none;
-}
-
-#cancel:hover
-{
-text-decoration: none;	
-cursor: pointer;
+  display:none;
 }
 
 tr[id=notMandatoryRow] { 

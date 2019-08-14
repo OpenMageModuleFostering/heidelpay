@@ -10,7 +10,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_code = 'payment';
 	protected $_order;
 	protected $_moduleMode = 'DIRECT';
-	protected $version = '15.11.10';
+	protected $version = '15.12.17';
 	
   /**
 	 * Availability options
@@ -641,10 +641,11 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
     $parameters['FRONTEND.ONEPAGE']	= "true";
     if ($mode == 'RG'){
       $parameters['FRONTEND.NEXTTARGET']	= "location.href";
+	  $parameters['FRONTEND.CSS_PATH']      = $this->pageURL."heidelpay_reg_style.css";
     } else {
       $parameters['FRONTEND.NEXTTARGET']	= "top.location.href";
+	  $parameters['FRONTEND.CSS_PATH']      = $this->pageURL."heidelpay_style.css";
     }
-    $parameters['FRONTEND.CSS_PATH']      = $this->pageURL."heidelpay_style.css";
     $parameters['FRONTEND.RETURN_ACCOUNT']= "true";
 
     if ($this->actualPaymethod == 'TP'){
@@ -733,38 +734,23 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
     $parameters['PRESENTATION.USAGE']			= $orderId; // ge�ndert 19.06.2012
     $parameters['ACCOUNT.COUNTRY']				= $userData['country'];
 
-    $imagePath = Mage::getDesign()->getSkinUrl('images/heidelpay/');    
-    
-	$lang = strtolower($lang);
-	$filename_f = 'forward.png';
-	$filename_b= 'back.png';
-	$filename_frg = 'forward.jpg';
-	
+   $parameters['FRONTEND.BUTTON.1.NAME'] = 'PAY';
+   $parameters['FRONTEND.BUTTON.1.TYPE'] = 'BUTTON';
+   $parameters['FRONTEND.BUTTON.2.NAME'] = 'CANCEL';
+   $parameters['FRONTEND.BUTTON.2.TYPE'] = 'BUTTON';
+	  
 	if($lang != 'en'){
-		$front = 'forward_'.$lang.'.png';
-		$back = 'back_'.$lang.'.png';
-		$frontrg = 'forward_'.$lang.'.jpg';
-		
-		if(@GetImageSize($imagePath.$front)){ $filename_f = $front; }
-		if(@GetImageSize($imagePath.$back)){ $filename_b = $back; }
-		if(@GetImageSize($imagePath.$frontrg)){ $filename_frg = $frontrg; }
+	
+		$parameters['FRONTEND.BUTTON.1.LABEL'] = 'Weiter';
+		$parameters['FRONTEND.BUTTON.2.LABEL'] = 'Zurück';
+	}
+	else
+	{
+		$parameters['FRONTEND.BUTTON.1.LABEL'] = 'Forward';
+		$parameters['FRONTEND.BUTTON.2.LABEL'] = 'Back';
 	}
 
-    if ($mode != 'RG'){
-      $parameters['FRONTEND.BUTTON.1.NAME'] = 'PAY';
-      $parameters['FRONTEND.BUTTON.1.TYPE'] = 'IMAGE';
-      $parameters['FRONTEND.BUTTON.1.LINK'] = $imagePath.$filename_f;
-      $parameters['FRONTEND.BUTTON.2.NAME'] = 'CANCEL';
-      $parameters['FRONTEND.BUTTON.2.TYPE'] = 'IMAGE';
-      $parameters['FRONTEND.BUTTON.2.LINK'] = $imagePath.$filename_b;
-    } else {
-      $parameters['FRONTEND.BUTTON.1.NAME'] = 'PAY';
-      $parameters['FRONTEND.BUTTON.1.TYPE'] = 'IMAGE';
-      $parameters['FRONTEND.BUTTON.1.LINK'] = $imagePath.$filename_frg;
-      $parameters['FRONTEND.BUTTON.2.NAME'] = 'CANCEL';
-      $parameters['FRONTEND.BUTTON.2.TYPE'] = 'IMAGE';
-      $parameters['FRONTEND.BUTTON.2.LINK'] = $imagePath.'space.gif';
-    }
+   
 
     $parameters['SHOP.TYPE'] = 'Magento '. Mage::getVersion();
     $parameters['SHOPMODULE.VERSION'] = $this->version; 
