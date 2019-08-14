@@ -10,7 +10,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_code = 'payment';
 	protected $_order;
 	protected $_moduleMode = 'DIRECT';
-	protected $version = '14.09.01';
+	protected $version = '14.09.05';
 	
   /**
 	 * Availability options
@@ -759,7 +759,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
   
   public function getBillsafeBasket($order)/*{{{*/
   {
-			$items = $order->getAllVisibleItems();
+	  $items = $order->getAllVisibleItems();
 		
       if ($items) {
       	$i = 0;
@@ -786,7 +786,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	    }
 		
 	    if ($this->getShippingNetPrice($order) > 0){
-	    $i++;
+			$i++;
 	      	$prefix = 'CRITERION.POS_'.sprintf('%02d', $i);
 	      	$parameters[$prefix.'.POSITION'] 					= $i;
 			$parameters[$prefix.'.QUANTITY'] 				= '1';
@@ -794,7 +794,6 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 			$parameters[$prefix.'.AMOUNT_UNIT_GROSS'] 		= floor(bcmul((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)), 100, 10));
 			$parameters[$prefix.'.AMOUNT_GROSS'] 				= floor(bcmul((($order->getShippingAmount() - $order->getShippingRefunded()) * (1 + $this->getShippingTaxPercent($order)/100)), 100, 10));
 
-			 
 			$parameters[$prefix.'.TEXT'] 							= 'Shipping';
 			//$parameters[$prefix.'.COL1'] 						= 'SKU:'.$item->getSku();
 			//$parameters[$prefix.'.COL2'] 						= '';
@@ -804,8 +803,8 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 			$parameters[$prefix.'.PERCENT_VAT'] 		=  $this->getShippingTaxPercent($order);
 			$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'shipment'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
 	    }
-	    if ($order->getDiscountAmount() > 0){
-	    $i++;
+	    if ($order->getDiscountAmount() < 0){
+			$i++;
 	      	$prefix = 'CRITERION.POS_'.sprintf('%02d', $i);
 	      	$parameters[$prefix.'.POSITION'] 					= $i;
 			$parameters[$prefix.'.QUANTITY'] 				= '1';
@@ -823,7 +822,6 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 			$parameters[$prefix.'.ARTICLE_TYPE'] 		= 'voucher'; // "goods" (Versandartikel), "shipment" (Versandkosten) oder "voucher" (Gutschein/Rabatt)
 	    }
 
-		
     return $parameters;
   }/*}}}*/
   

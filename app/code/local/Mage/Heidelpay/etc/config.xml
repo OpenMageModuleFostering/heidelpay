@@ -2,7 +2,7 @@
 <config>
   <modules>
     <Mage_Heidelpay>
-            <version>14.09.01</version>
+            <version>14.09.05</version>
     </Mage_Heidelpay>
   </modules>
   <!--{{{Global-->
