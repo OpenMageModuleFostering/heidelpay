@@ -20,14 +20,18 @@
 			if($('payment_form_hpdc').visible()){
 				if($$('#payment_form_hpdc #heidelpay_use_dcard').length == 0){
 					if($('p_method_hpdc').checked){
+						<!--[if !IE]-->
 						$$('#payment-buttons-container button').first().hide();
+						<!--[endif]-->
 					}
 					if($$('#payment_form_hpdc iframe').length == 0){ $$('#payment-buttons-container button').first().show(); }
 				}else{
 					if(($F('p_method_hpdc') == 'hpdc') && !($F('heidelpay_use_dcard') == 1)){
 						$$('#payment-buttons-container button').first().show();
 						if($$('#payment_form_hpdc iframe').length > 0){
+							<!--[if !IE]-->
 							$$('#payment-buttons-container button').first().hide();
+							<!--[endif]-->
 						}
 					}
 					if(($F('p_method_hpdc') == 'hpdc') && ($F('heidelpay_use_dcard') == 1)){
@@ -42,7 +46,9 @@
 				if($F('heidelpay_use_dcard') == 1){
 					$$('#payment-buttons-container button').first().show();
 				}else{
+					<!--[if !IE]-->
 					$$('#payment-buttons-container button').first().hide();
+					<!--[endif]-->
 				}
 			});
 		}

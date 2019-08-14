@@ -128,7 +128,7 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
     $order->loadByIncrementId($session->getLastRealOrderId());
     $payment = $order->getPayment()->getMethodInstance();
     // Load last status
-    if ($order->getStatus() == $payment->getPaymentState()) {
+    if (($order->getStatus() == $payment->getPaymentState()) and ($payment->getPaymentState() != $payment->getWaitState())) {
     	$this->_redirect('heidelpay/payment/success', array('_forced_secure' => true, '_store_to_url' => true, '_nosid' => true));
     	return;
     }
@@ -726,6 +726,9 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
   {
     $request = Mage::app()->getRequest()->getParams();
     $this->getSession()->setHpUniqueId($request['uniqueId']);
+    $this->getCheckout()->setHeidelpayUseCcard(0);
+    $this->getCheckout()->setHeidelpayUseXcard(0);
+    $this->getCheckout()->setHeidelpayUseDcard(0);
     echo '<script>top.payment.save()</script>';
     return;
   }/*}}}*/
@@ -737,7 +740,7 @@ class Mage_Heidelpay_PaymentController extends Mage_Core_Controller_Front_Action
     $order->loadByIncrementId($session->getLastRealOrderId());
     $payment = $order->getPayment()->getMethodInstance();
     // Load last status
-    if ($order->getStatus() == $payment->getPaymentState()) {
+    if (($order->getStatus() == $payment->getPaymentState()) and ($payment->getPaymentState() != $payment->getWaitState())) {
     	$this->_redirect('heidelpay/payment/success', array('_forced_secure' => true, '_store_to_url' => true, '_nosid' => true));
     	return;
     }

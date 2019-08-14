@@ -75,22 +75,38 @@ class Mage_Heidelpay_Model_Method_Hpdc extends Mage_Heidelpay_Model_Method_Payme
     return $this->_formBlockType;
   }
 
-   public function validate()
-  {
-    parent::validate();
-    $post = Mage::app()->getRequest()->getParams();
-    if ($post['payment']['method'] == $this->_code) {
-      if (isset($post['heidelpay_use_dcard']) && $post['heidelpay_use_dcard'] == 1){
-        $this->getCheckout()->setHeidelpayUseDcard(1);
-        $customer = $this->getQuote()->getCustomer();
-        $this->getSession()->setHpUniqueId($customer->getHeidelpay_dcard_unique_id());
-      } else {
-        $this->getCheckout()->setHeidelpayUseDcard(0);
-      }
-    }
-    return $this;
-  }
-  
+	public function validate(){
+		parent::validate();
+    	
+		if (Mage::app()->getRequest()->getActionName() != 'savePayment'){ return $this;}
+		if ($this->getConfigData('modulemode') == 'AFTER') return $this;
+		
+		$post = Mage::app()->getRequest()->getParams();
+		$hpUniqeID = $this->getSession()->getHpUniqueId();
+		$UseCcard = $this->getCheckout()->getHeidelpayUseDcard();
+
+		if ($post['payment']['method'] == $this->_code) {			
+			if($UseCcard == 1) {
+				if (!array_key_exists('heidelpay_use_dcard',$post)){
+					Mage::throwException($this->_getHelper('heidelpay')->__('Please use the next-button next to our debit card information to proceed.'));
+				}
+			}
+			
+			if ($post['payment']['method'] == $this->_code) {
+				if (isset($post['heidelpay_use_dcard']) && $post['heidelpay_use_dcard'] == 1){
+					$customer = $this->getQuote()->getCustomer();
+					$this->getSession()->setHpUniqueId($customer->getHeidelpay_dcard_unique_id());
+				} elseif(empty($hpUniqeID)) {
+					Mage::throwException($this->_getHelper('heidelpay')->__('Please use the next-button next to our debit card information to proceed.'));
+				}
+			}
+			
+			$this->getCheckout()->setHeidelpayUseDcard(1);
+		}
+
+		return $this;
+	}
+	
 	/**
 	 * Retrieve payment method title
 	 *

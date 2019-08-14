@@ -10,7 +10,7 @@ class Mage_Heidelpay_Model_Method_Payment extends Mage_Payment_Model_Method_Abst
 	protected $_code = 'payment';
 	protected $_order;
 	protected $_moduleMode = 'DIRECT';
-	protected $version = '14.09.12';
+	protected $version = '14.10.09';
 	
   /**
 	 * Availability options

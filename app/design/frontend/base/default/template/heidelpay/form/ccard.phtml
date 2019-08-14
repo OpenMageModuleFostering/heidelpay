@@ -20,14 +20,18 @@
 			if($('payment_form_hpcc').visible()){
 				if($$('#payment_form_hpcc #heidelpay_use_ccard').length == 0){
 					if($('p_method_hpcc').checked){
+						<!--[if !IE]-->
 						$$('#payment-buttons-container button').first().hide();
+						<!--[endif]-->
 					}
 					if($$('#payment_form_hpcc iframe').length == 0){ $$('#payment-buttons-container button').first().show(); }
 				}else{
 					if(($F('p_method_hpcc') == 'hpcc') && !($F('heidelpay_use_ccard') == 1)){
 						$$('#payment-buttons-container button').first().show();
 						if($$('#payment_form_hpcc iframe').length > 0){
+							<!--[if !IE]-->
 							$$('#payment-buttons-container button').first().hide();
+							<!--[endif]-->
 						}
 					}
 					if(($F('p_method_hpcc') == 'hpcc') && ($F('heidelpay_use_ccard') == 1)){
@@ -42,7 +46,9 @@
 				if($F('heidelpay_use_ccard') == 1){
 					$$('#payment-buttons-container button').first().show();
 				}else{
+					<!--[if !IE]-->
 					$$('#payment-buttons-container button').first().hide();
+					<!--[endif]-->
 				}
 			});
 		}		
