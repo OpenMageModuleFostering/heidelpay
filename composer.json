@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Heidelpay",
+    "name": "OpenMageModuleFostering\/Heidelpay",
     "type": "magento-module",
     "license": "proprietary",
     "homepage": "",
     "description": "Heidelpay Payment Plugin",
     "authors": [
-    {
-        "name": "Heidelberger Payment GmbH",
-        "email": "magento@heidelpay.de"
-    }
-],
+        {
+            "name": "Heidelberger Payment GmbH",
+            "email": "magento@heidelpay.de"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
